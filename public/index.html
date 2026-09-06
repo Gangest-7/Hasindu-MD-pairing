@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Hasindu MD - Pairing</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0b0b0b;
+      color: white;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: #151515;
+      border-radius: 22px;
+      padding: 30px 22px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 18px;
+      border: 3px solid #ffffff;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #aaa;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #0d0d0d;
+      color: white;
+      outline: none;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: white;
+      color: black;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #0d0d0d;
+      display: none;
+    }
+
+    .code {
+      font-size: 25px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <div class="logo"
+      style="display:flex;align-items:center;justify-content:center;font-size:35px;">
+      👑
+    </div>
+
+    <h1>HASINDU MD</h1>
+
+    <p>WhatsApp Pairing</p>
+
+    <input
+      type="tel"
+      id="phone"
+      placeholder="947XXXXXXXX"
+      autocomplete="off"
+    >
+
+    <button onclick="getPairingCode()">
+      Get Pairing Code
+    </button>
+
+    <div id="result"></div>
+
+  </div>
+
+  <script>
+    async function getPairingCode() {
+
+      const phone = document.getElementById("phone").value.trim();
+      const result = document.getElementById("result");
+
+      if (!phone) {
+        result.style.display = "block";
+        result.innerHTML = "❌ Please enter your WhatsApp number.";
+        return;
+      }
+
+      result.style.display = "block";
+      result.innerHTML = "⏳ Generating pairing code...";
+
+      try {
+
+        const response = await fetch("/api/pair", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            phone: phone
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.code) {
+          result.innerHTML = `
+            <div>✅ Pairing Code</div>
+            <div class="code">${data.code}</div>
+            <br>
+            <small>Enter this code in WhatsApp Linked Devices.</small>
+          `;
+        } else {
+          result.innerHTML =
+            "❌ " + (data.error || "Failed to generate code.");
+        }
+
+      } catch (error) {
+
+        result.innerHTML =
+          "❌ Server error. Please try again.";
+
+      }
+    }
+  </script>
+
+</body>
+</html>
