@@ -7,19 +7,21 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  res.send(`
-    <h1>👑 Hasindu MD</h1>
-    <p>WhatsApp Pairing Service</p>
-  `);
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 app.get("/api/status", (req, res) => {
   res.json({
     status: "online",
-    bot: "Hasindu MD"
+    bot: "Hasindu MD",
+    message: "Pairing service is online"
   });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Hasindu MD Pairing Server running on port ${PORT}`);
+  console.log("================================");
+  console.log("👑 HASINDU MD PAIRING SERVER");
+  console.log("✅ Server Online");
+  console.log(`🌐 Port: ${PORT}`);
+  console.log("================================");
 });
